@@ -42,6 +42,7 @@ public class AuditService {
 			version.setEntity(d.get());
 			version.setVersion(index.getAndIncrement());
 			version.setAuthor(d.getCommitMetadata().getAuthor());
+			version.setCreatedAt(d.getCommitMetadata().getCommitDate());
 			if ( !javers.compare(currentVersion, d.get()).hasChanges()) {
 				version.setCurrentVersion(true);
 			}
