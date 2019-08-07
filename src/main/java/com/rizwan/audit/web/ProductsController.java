@@ -1,6 +1,7 @@
 
 package com.rizwan.audit.web;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -35,13 +36,13 @@ public class ProductsController {
 	AuditService auditService;
 
 	@PostMapping("")
-	ResponseEntity<Product> create(@RequestBody Product product) {
+	ResponseEntity<Product> create(@RequestBody Product product, Principal principal) {
 
 		product.setId(UUID.randomUUID());
 		product.setCreatedAt((LocalDateTime.now(ZoneOffset.UTC).withNano(0)));
 		product.setUpdatedAt((LocalDateTime.now(ZoneOffset.UTC).withNano(0)));
 		productsRepository.save(product);
-		auditService.commit("user", product);
+		auditService.commit(principal.getName(), product);
 		return new ResponseEntity<>(product, HttpStatus.CREATED);
 	}
 
@@ -52,14 +53,14 @@ public class ProductsController {
 	}
 
 	@PutMapping("/{id}")
-	ResponseEntity<Product> update(@PathVariable UUID id, @RequestBody Product product) {
+	ResponseEntity<Product> update(@PathVariable UUID id, @RequestBody Product product, Principal principal) {
 
 		return productsRepository.findById(id).map(p -> {
 			p.setName(product.getName());
 			p.setDescription(product.getDescription());
 			p.setUpdatedAt((LocalDateTime.now(ZoneOffset.UTC).withNano(0)));
 			productsRepository.save(p);
-			auditService.commit("user", p);
+			auditService.commit(principal.getName(), p);
 			return new ResponseEntity<>(p, HttpStatus.OK);
 		}).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
