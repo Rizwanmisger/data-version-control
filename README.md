@@ -6,7 +6,7 @@
 
 - Run the application and go on http://localhost:8080/swagger-ui.html for API documentation
 - Application is secured using basic authentication:
-  User: user
+  User: user, 
   Password: user
 
 ### Build and run
